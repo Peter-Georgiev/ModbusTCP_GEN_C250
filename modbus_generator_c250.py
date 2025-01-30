@@ -12,10 +12,10 @@ logging.basicConfig(
     filename=LOG_FILE,
     level=logging.INFO, 
     format='%(asctime)s - %(levelname)s - %(message)s',
-    encoding=ENCODING
+    encoding=ENCODING #За python 3.6 да се коментира
     )
 logger = logging.getLogger(__name__)
-logger.info("---------------------------------------------")
+print("\n")
 logging.info("Програмата е стартирана.")
 
 # Настройки за връзката
@@ -302,8 +302,12 @@ def main():
                 # Генератор - СТАРТ/СТОП през Modbus.
                 action = get_input_value(2, "СТОП", "СТАРТ")
                 isAction = input_confirm(action)
-                if not isAction:
-                    print("Операцията СТАРТ/СТОП през Modbus е отказана.")
+                
+                if not isAction and action == 0:
+                    print("Операцията СТОП през Modbus е отказана.")
+                    continue
+                elif not isAction and action == 1:
+                    print("Операцията СТАРТ през Modbus е отказана.")
                     continue
 
                 write_register(REGISTERS['modbus_start_stop'], action)
