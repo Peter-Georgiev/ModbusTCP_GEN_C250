@@ -366,7 +366,7 @@ def main():
                 print(e)
         elif choice == '4':
             client.close()
-            print("Изход от програмата.")
+            print("Изход от програмата.\n")
             break
 
         else:
