@@ -46,6 +46,7 @@ REGISTERS = {
     'out_va_total': 43,         # Адрес на регистъра 43 - Alternator Output VA Total (Read Only)
     'alt_frequency': 44,        # Адрес на регистъра 44 - Average Alternator Line Frequency (Read Only)
     'battery_voltage': 61,      # Адрес на регистъра 61 - Battery Voltage (Read Only)
+    'oil_pressure': 62,         # Monitor point for oil pressure
     'coolant_temp': 64,         # Адрес на регистъра 64 - Coolant Temperature (Read Only)
     'engine_speed': 68,         # Адрес на регистъра 68 - Engine Speed (Read Only)
     'modbus_start_stop': 300,   # Адрес на регистъра 300 - Genset start stop control via Modbus (Read and Write)
@@ -187,15 +188,17 @@ def print_common_gen_info(battery_voltage, coolant_temp):
     print(f"Температура на антефриз: {coolant_temp:.2f} °C.")
 
 #1. Прочетете статус на генератора.
-def choice_gen_status():
+def choice_1_gen_status():
     #11 - Genset State: 0-Ready, 1-Precrank, 2-Ramp, 3-Running
     state = read_register(REGISTERS['genset_state'])[0]
     print(state_genset_state(state))
 
-        #10 - Operation Mode Switch Position
+    #10 - Operation Mode Switch Position
     msg_switch_position = state_switch_position(read_register(REGISTERS['switch_position'])[0])
     #61 - Battery Voltage
     result_battery_voltage = read_register(REGISTERS['battery_voltage'])[0] *0.1
+    #62 - Oil Pressure
+    result_oil_pressure = read_register(REGISTERS['oil_pressure'])[0]
     #64 - Coolant Temperature
     result_coolant_temp = read_register(REGISTERS['coolant_temp'])[0] * 0.1
     #68 - Engine Speed
@@ -209,6 +212,7 @@ def choice_gen_status():
     print(f"Operation Mode Switch Position: {msg_switch_position}")
     print(f"Active Fault: {msg_active_fault}")
     print(f"Engine Speed = {result_engine_spee} Rpm.")
+    print(f"Oil Pressure = {result_oil_pressure} kPa.")
 
     if state == GEN_STATE_READY:
         print(f"{state_genset_state(state)}")
@@ -292,7 +296,7 @@ def main():
         if choice == '1':
             #1. Прочетете статус на генератора.
             try:            
-                choice_gen_status()
+                choice_1_gen_status()
             except ValueError as e:
                 print(e)
 
